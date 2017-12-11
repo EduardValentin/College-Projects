@@ -1,5 +1,7 @@
-#
-include < iostream > #include < fstream > #include < vector > #include < list >
+#include < iostream >
+#include < fstream > 
+#include < vector > 
+#include < list >
 
     using namespace std;
 
