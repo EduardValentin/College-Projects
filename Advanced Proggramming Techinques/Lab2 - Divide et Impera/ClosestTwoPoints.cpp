@@ -9,7 +9,7 @@
 #include <iomanip>
 
 #define infl 0x7fffffffffffffffLL
-#define NMAX 100000 + 5
+#define NMAX 100005
 
 using namespace std;
 
@@ -24,7 +24,7 @@ Point X[NMAX], candidates[NMAX];
 
 void interclas(size_t st, size_t mij, size_t dr)
 {
-	Point  *aux = new Point[dr - st + 1];
+	Point* aux = new Point[dr - st + 1];
 	size_t i = st, j = mij + 1, k = 0;
 	while (i <= mij && j <= dr)
 	{
@@ -34,8 +34,8 @@ void interclas(size_t st, size_t mij, size_t dr)
 			aux[k++] = X[j++];
 	}
 
-	if(i>mij)
-		while (j<=dr)
+	if (i>mij)
+		while (j <= dr)
 			aux[k++] = X[j++];
 	else
 		while (i <= mij)
@@ -72,8 +72,9 @@ llong distance2(const Point a, const Point b)
 
 llong solveFast(size_t st, size_t dr, Point &first, Point &second)
 {
-	sort(X + st, X + dr, increasingY);		// Se sorteaza elementele crescator dupa ordonata
-	llong mind = infl;						// Distanta minima dintre doua puncte din X[st...dr]
+	sort(X + st,X + dr,increasingY);
+	llong mind = infl;
+
 	int pos1 = -1, pos2 = -1;
 	for (size_t i = st; i < dr; i++)
 	{
@@ -95,7 +96,7 @@ llong solveFast(size_t st, size_t dr, Point &first, Point &second)
 	return mind;
 }
 
-llong closestDistance(size_t st, size_t dr,Point &first,Point &second)
+llong closestDistance(size_t st, size_t dr, Point &first, Point &second)
 {
 	if (dr - st < 3)
 	{
@@ -105,6 +106,8 @@ llong closestDistance(size_t st, size_t dr,Point &first,Point &second)
 	{
 		// Divide
 		llong mij = (st + dr) / 2;
+		
+		int elemMij = X[mij].x;
 
 		Point f1, f2, fmin, s1, s2, smin;
 
@@ -129,7 +132,7 @@ llong closestDistance(size_t st, size_t dr,Point &first,Point &second)
 		// Ne uitam in banda
 		size_t nrOfCandidates = 0;
 		for (size_t i = st; i <= dr; i++)
-			if (pow(X[i].x - X[mij].x, 2) < delta)
+			if (pow(X[i].x - elemMij, 2) < delta)
 				candidates[nrOfCandidates++] = X[i];
 
 
@@ -137,7 +140,7 @@ llong closestDistance(size_t st, size_t dr,Point &first,Point &second)
 		{
 			int l = 0;
 
-			for (size_t j = i + 1; l < 7 && j < nrOfCandidates; j++, l++)
+			for (size_t j = i + 1; l <= 7 && j < nrOfCandidates; j++, l++)
 			{
 				llong d3 = distance2(candidates[i], candidates[j]);
 				if (d3 < delta)
@@ -170,17 +173,19 @@ int main()
 		X[i].x = xx;
 		X[i].y = yy;
 	}
-	
+
 	fin.close();
 
 	sort(X, X + n, increasingX);
-	
+
 	Point p1, p2;
+	
 	long double result = sqrt(closestDistance(0, n - 1, p1, p2));
-	fout << fixed << setprecision(6) << result  << endl;
 
-	//fout << "(" << p1.x << "," << p1.y << ") , " << "(" << p2.x << "," << p2.y << ")\n";
+	fout << fixed << setprecision(6) << result << endl;
 
-    return 0;
+
+	fout << "(" << p1.x << "," << p1.y << ") , " << "(" << p2.x << "," << p2.y << ")\n";
+
+	return 0;
 }
-
