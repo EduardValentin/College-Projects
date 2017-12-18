@@ -1,3 +1,15 @@
+/*
+    Idee: Jucatorul 1 are o strategie de castig daca diferenta maxima pe care o poate obtine e mare decat 0
+    Subproblema: d[i][j] = diferenta maxima pe care o poate obtine jucatorul care e la mutare pe o tabla v[i..j]
+    Recurenta:   d[i][j] = max{v[i] - d[i+1][j],v[j] - d[i][j-1]}
+    Solutia problemei: Jucatorul 1 are strategie de castig daca d[1][n] > 0, altfel nu are.
+    Ordine de calcul: i=n..1
+
+    Pt a vedea ce alege  jucatorul care e la mutare verificam: 1) v[i] = d[i][j] + d[i+1][j] --> jucatorul trebuie sa aleaga v[i]
+                                                               2) v[j] = d[i][j] + d[i+1][j] --> jucatorul trebuie sa aleaga v[j]
+
+*/
+
 #include <iostream>
 #include <fstream>
 #include <math.h>
