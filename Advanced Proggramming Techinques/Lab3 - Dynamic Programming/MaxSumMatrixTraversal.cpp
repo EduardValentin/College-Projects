@@ -1,3 +1,11 @@
+/*
+    Subproblema: s[i][j] = suma maxima ce se poate obtine care contine elementul a[i][j]
+    Solutie: S = max{s[i][m] | i=1,n si m = nr de coloane}
+    Ordine de calcul: stanga -> dreapta
+    p[i][j] = elementul precedent lui a[i][j] ce se afla pe coloana j-1
+
+*/
+
 #include <iostream>
 #include <fstream>
 
@@ -5,10 +13,10 @@ using namespace std;
 
 void afisRec(int i,int j,int **p)
 {
-    cout << endl << i << " " << j;
     if(j > 0)
         afisRec(p[i][j],j-1,p);
 
+    cout << endl << i+1 << " " << j+1;
 }
 
 int main()
@@ -108,8 +116,11 @@ int main()
             sumMax = s[i][m-1];
             imax = i;
         }
-    cout << "Suma maxima este " << sumMax;
 
+    cout << "Suma maxima este " << sumMax;
     afisRec(imax,m-1,p);
+
+
+
     return 0;
 }
