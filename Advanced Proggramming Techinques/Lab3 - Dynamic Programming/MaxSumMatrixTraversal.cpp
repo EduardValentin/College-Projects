@@ -108,7 +108,7 @@ int main()
         }
     }
 
-    int sumMax = -1;
+    int sumMax = -1,nrTrasee=0;
     size_t imax;
     for(size_t i = 0;i<n;i++)
         if(s[i][m-1] > sumMax)
@@ -120,7 +120,16 @@ int main()
     cout << "Suma maxima este " << sumMax;
     afisRec(imax,m-1,p);
 
+    // decidem daca traseul este unic
 
-
+    for(size_t i =0;i<n;i++)
+    {
+        if(s[i][m-1] == sumMax)
+            nrTrasee++;
+    }
+    if(nrTrasee > 1)
+        cout << "\nTraseul nu e unic, exista " << nrTrasee << " trasee posibile de suma maxima.\n";
+    else
+        cout << "\nTraseul e unic.\n";
     return 0;
 }
