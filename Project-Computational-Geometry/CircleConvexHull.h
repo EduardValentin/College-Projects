@@ -18,6 +18,7 @@ public:
 	// friend functions
 	friend int orientation(const Point &p1, const Point &p2, const Point &p3);
 
+	// de adaugat functie de citire a punctelor, din stream initial
 private:
 
 };
