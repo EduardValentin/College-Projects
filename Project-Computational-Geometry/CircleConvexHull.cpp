@@ -1,12 +1,11 @@
+#include "stdafx.h"
 #include "CircleConvexHull.h"
 #include <algorithm>
+#include <stdlib.h>
 
 using namespace std;
 
-double CircleConvexHull::distanceFromP0(const Point &a)
-{
-	return ((p0.getX() - a.getX())*(p0.getX() - a.getX()) + (p0.getY() - a.getY())*(p0.getY() - a.getY()));
-}
+Point CircleConvexHull::p0 = Point(0, 0);
 
 int orientation(const Point &a, const Point &b, const Point &c)
 {
@@ -19,79 +18,101 @@ int orientation(const Point &a, const Point &b, const Point &c)
 	Point vab(b.getX() - a.getX(), b.getY() - a.getY());
 	Point vbc(c.getX() - b.getX(), c.getY() - b.getY());
 
-	double val = vab.getX() * vbc.getY() - vbc.getY() * vab.getY();			// Cross product of the 2 vectors
-	if (val == 0) return 0;
+	double val = (vab.getX() * vbc.getY()) - (vbc.getX() * vab.getY());			// Cross product of the 2 vectors
+	if (val == 0) 
+		return 0;
 
 	return ((val > 0) ? 2 : 1);
-
-	return 0;
 }
 
-int compare(const Point a, const Point b)
+int compare(const void *a, const void *b)
 {
-	int o = orientation(CircleConvexHull::p0, a, b);
+	Point pa = *((Point *)a);
+	Point pb = *((Point *)b);
+
+	int o = orientation(CircleConvexHull::getBottomMostPoint(), pa, pb);
 
 	if (!o)
 	{
-		return ((CircleConvexHull::distanceFromP0(a) > CircleConvexHull::distanceFromP0(b)) ? 1 : 0);
+		return ((pa.distanceFrom(CircleConvexHull::getBottomMostPoint()) <= pb.distanceFrom(CircleConvexHull::getBottomMostPoint())) ? -1 : 1);
 	}
 
-	return ((o == 2) ? 0 : 1);
+	return ((o == 2) ? -1 : 1);
 
+}
+
+Point CircleConvexHull::getBottomMostPoint()
+{
+	return p0;
+}
+
+size_t CircleConvexHull::computeBottomMostPoint()
+{
+	// We find the bottom most point and assign it to p0
+	Point pmin = cpoints[0];
+	size_t mpos = 0;
+	for (size_t i = 1; i < cpoints.size(); i++)
+	{
+		if (cpoints[i].getY() < pmin.getY())
+		{
+			mpos = i;
+			pmin = cpoints[i];
+		}
+		else if ((cpoints[i].getY() == pmin.getY()) && (cpoints[i].getX() < pmin.getY()))
+		{
+			mpos = i;
+			pmin = cpoints[i];
+		}
+	}
+	p0 = pmin;
+	return mpos;
 }
 
 vector<Point> CircleConvexHull::convexHull()
 {
 	vector<Point> result;
-	vector<Point> vaux;
-	// We find the bottom most point and assign it to p0
-	Point pmin = vaux[0];
-	size_t mpos = 0;
-	for (size_t i = 1; i < vaux.size(); i++)
+	Point *vaux;
+	size_t size = cpoints.size();
+
+	vaux = new Point[cpoints.size()];
+
+	for (size_t i = 0; i < cpoints.size(); i++)
 	{
-		if (vaux[i].getY() < pmin.getY())
-		{
-			mpos = i;
-			pmin = vaux[i];
-		}
-		else if ((vaux[i].getY() == pmin.getY()) && (vaux[i].getX() < pmin.getY()))
-		{
-			mpos = i;
-			pmin = vaux[i];
-		}
+		vaux[i] = cpoints[i];
 	}
+
+	size_t mpos = computeBottomMostPoint();
 
 	// Swap
 	Point aux = vaux[0];
 	vaux[0] = vaux[mpos];
 	vaux[mpos] = aux;
 
-	p0 = pmin;
 
 	// Now we sort the array of points according to polar angle with respect to p0
-	sort(vaux.begin() + 1, vaux.end(), compare);
+	qsort(vaux+ 1,size-1,sizeof(Point),compare);
 
 
 	// Now we get rid of colinear points with p0 and chose the one that is at the largest distance from p0
 	mpos = 1;
-	for (size_t i = 1; i < vaux.size(); i++)
+	for (size_t i = 1; i < size; i++)
 	{
-		while (i < vaux.size() - 1 && orientation(p0, vaux[i], vaux[i + 1]) == 0)
+		while (i < size - 1 && orientation(p0, vaux[i], vaux[i + 1]) == 0)
 			i++;
 
 		vaux[mpos] = vaux[i];
 		mpos++;							// Update the size
 	}
 
-	vaux.resize(mpos);
+	size = mpos;
 
 	result.push_back(vaux[0]);
 	result.push_back(vaux[1]);
 
 	// Begin iteration
-	for (size_t i = 2; i < vaux.size(); i++)
+	for (size_t i = 2; i < size; i++)
 	{
-		while (orientation(result[result.size() - 2], result[result.size()], vaux[i]) != 2)
+		while (orientation(result[result.size() - 2], result[result.size()-1], vaux[i]) != 2)
 		{
 			// Keep removing back while it forms right turn with v[i]
 			result.pop_back();
@@ -100,6 +121,18 @@ vector<Point> CircleConvexHull::convexHull()
 	}
 	return result;
 
+}
+
+void CircleConvexHull::readPointsFromFile(ifstream &f)
+{
+	f >> inputPoint;
+
+	while (!f.eof())
+	{
+		Point p;
+		f >> p;
+		cpoints.push_back(p);
+	}
 }
 
 

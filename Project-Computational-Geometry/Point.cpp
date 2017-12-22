@@ -1,4 +1,10 @@
+#include "stdafx.h"
 #include "Point.h"
+
+double Point::distanceFrom(const Point &a) const
+{
+	return ((a.x - this->x)*(a.x - this->x) + (a.y - this->y)*(a.y - this->y));
+}
 
 double Point::getX() const
 {
@@ -29,4 +35,11 @@ ostream& operator << (ostream& o, const Point &a)
 {
 	o << "(" << a.x << "," << a.y << ")  ";
 	return o;
+}
+
+istream& operator >> (istream &i, Point &a)
+{
+	i >> a.x;
+	i >> a.y;
+	return i;
 }
