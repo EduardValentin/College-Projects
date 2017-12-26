@@ -1,7 +1,5 @@
 #pragma once
 #include <iostream>
-#include "stdafx.h"
-
 
 using namespace std;
 
@@ -22,7 +20,7 @@ public:
 	friend istream& operator >> (istream& i, Point &a);
 
 
-	
+
 private:
 
 };
