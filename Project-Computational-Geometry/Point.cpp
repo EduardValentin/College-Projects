@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Point.h"
 
 double Point::distanceFrom(const Point &a) const
@@ -13,7 +12,7 @@ double Point::getX() const
 
 double Point::getY() const
 {
-	return y;
+	return this->y;
 }
 
 void Point::setX(const double & x)
