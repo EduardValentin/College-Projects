@@ -192,7 +192,7 @@ int CircleConvexHull::checkPointPosition(const Point &p)
 
         int mij,left = 0,right = -2 + chull.size();
 
-        while(left < right)
+        while(left <= right)
         {
             mij = (left+right)/2;
             //cout << "mij:" <<chull[mij] << "/nmij+1:" << chull[mij+1];
@@ -279,8 +279,8 @@ int CircleConvexHull::checkPointPosition(const Point &p)
                     else if(dy == 0)
                     {
                         // special case, the equation is x = chull[mij].y
-                        a = chull[mij].getY();
-                        b = 0;
+                        b = chull[mij].getY();
+                        a = 0;
                         c = -a;
                     }
                     else
